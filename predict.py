@@ -33,9 +33,13 @@ if args.top_k:
     top_k = args.top_k
 else:
     top_k = 5
-    
-with open('../aipnd-project/cat_to_name.json', 'r') as f:
-    cat_to_name = json.load(f)
+ 
+if args.add_json:
+    with open(args.add_json, 'r') as f:
+        cat_to_name = json.load(f)
+else:
+    with open('../aipnd-project/cat_to_name.json', 'r') as f:
+        cat_to_name = json.load(f)
 
 
 

@@ -9,7 +9,8 @@ def load_checkpoint(filepath):
     
     checkpoint = torch.load(filepath, map_location=lambda storage, loc: storage)
     
-    model = models.vgg16(pretrained=True)
+    model = getattr(torchvision.models, checkpoint['arch'])(pretrained=True)
+    #model = models.vgg16(pretrained=True)
     
     for param in model.parameters():
             param.requires_grad = False
@@ -121,3 +122,5 @@ def find_flower_names(classes, categories):
                 flowers.append(name)
                    
     return flowers
+
+

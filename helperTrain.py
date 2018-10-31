@@ -2,7 +2,7 @@ import torch
 
 def model_call(arch='vgg16'):
     '''
-    Two options to choose: 'vgg16' and 'resnet-18'
+    Two options to choose: 'vgg16' and 'vgg13'
     '''
     from torchvision import transforms, datasets, models
     if arch == 'vgg16':
@@ -73,8 +73,8 @@ def train_model(model, learning_rate, epochs, nn, optim, data, validation_data, 
     steps = 0
 
     # change to cuda for GPU processing
-    #device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
-    model.to('cuda')
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
+    model.to(device)
 
     for e in range(epochs):
         model.train()
@@ -135,12 +135,13 @@ def calculate_acc(model, data):
             print(equals.float().mean())
 
 
-def save_model(checkpoint_name, model, optimizer, image_datasets):
+def save_model(checkpoint_name, model, optimizer, image_datasets, arch):
     # create a checkpoint         
     checkpoint = {'n_in': 25088,
                  'n_out': 102,
                  'n_h': [4096, 800],
                  'state_dict': model.state_dict(),
+                  'arch': arch,
                  'epochs': 7,
                  'optimizer_state.dict': optimizer.state_dict(),
                  'class_to_idx:': image_datasets.class_to_idx}
@@ -148,10 +149,26 @@ def save_model(checkpoint_name, model, optimizer, image_datasets):
     
     torch.save(checkpoint, checkpoint_name)
     
-    # this function is to choose the model
-#     def model_choose(model_type='vgg16'):
-#         if model_type='vgg16'):
-#             return model = 
+def calculate_acc(model, data):
+    model.eval()
+    model.to('cuda')
+    
+    with torch.no_grad():
+        for idx, (inputs, labels) in enumerate(data):
+            inputs, labels = inputs.to('cuda'), labels.to('cuda')
+            
+            #obtain outputs from the model
+            outputs = model.forward(inputs)
+            
+            #get the probabilities
+            _, predicted = outputs.max(dim=1)
+
+            equals = predicted == labels.data
+
+            print(equals.float().mean())
+
+           
+
     
     
     

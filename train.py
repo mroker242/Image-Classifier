@@ -92,7 +92,7 @@ with open('../aipnd-project/cat_to_name.json', 'r') as f:
     cat_to_name = json.load(f)
     
 # build initial model  
-model = helper.model_call('vgg16')
+model = helper.model_call(arch)
 
 optimizer = optim.Adam(model.classifier.parameters(), lr = learning_rate)
 
@@ -109,9 +109,9 @@ helper.train_model(model, 0.001, epochs, nn, optim, dataloaders, validation_data
 
 # save the model using argument given, if not use testing.pth as default
 if args.save_dir:
-    helper.save_model(args.save_dir, model, optimizer, image_datasets)
+    helper.save_model(args.save_dir, model, optimizer, image_datasets, arch)
 else:
-    helper.save_model('testing.pth', model, optimizer, image_datasets)
+    helper.save_model('testing.pth', model, optimizer, image_datasets, arch)
         
     
 
